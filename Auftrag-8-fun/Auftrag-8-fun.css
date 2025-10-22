@@ -1,0 +1,209 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: rgb(39, 80, 58);
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    overflow: hidden;
+    color: rgb(243, 224, 202);
+}
+.Name {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    background-color: rgb(243, 224, 202);
+    border: none;
+}
+
+.Vorname {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Strasse {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.PLZ {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Geburtsdatum {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Telefonnummer {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Heimatort {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.AHV {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Mobile {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Kanton {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.E-Mail {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Staat {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.MutterspracheForm {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    background-color: rgb(243, 224, 202);
+}
+
+.Muttersprache-titel {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 150%;
+    border: none;
+}
+
+.andere {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    border-bottom: 4px solid black;
+    margin-top: 6%;
+    background-color: rgb(243, 224, 202);
+}
+
+.Geschlecht-titel {
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+}
+
+.GeschlechtForm {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    background-color: rgb(243, 224, 202);
+    border: none;
+    margin-top: 6%;
+}
+
+
+.AusweisForm {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    border-radius: 5px 5px 0px 0px;
+    background-color: rgb(243, 224, 202);
+}
+
+.status {
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+    background-color: rgb(243, 224, 202);
+    border: none;
+    border-bottom: 4px solid black;
+    border-radius: 0px 0px 5px 5px;
+}
+
+.cText {
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    color: rgb(243, 224, 202);
+}
+.monkey {
+    position:absolute;
+    width: 5%;
+    rotate: 30deg;
+    top: 1.1%;
+    right: 1%;
+}
+.monkey1 {
+    position:absolute;
+    width: 5%;
+    rotate: -36deg;
+    top: 0.1%;
+    right: 93.5%;
+}
+.monkey2 {
+    position:absolute;
+    width: 8%;
+    bottom: 52%;
+    left: 53%;
+}
+.monkey3 {
+    position:absolute;
+    width: 8%;
+    bottom: 51%;
+    right: 53%;
+    z-index: -1;
+}
+.monkey4 {
+    position:absolute;
+    width: 10%;
+    bottom:70.4%;
+    left: 50%;
+    z-index: 2;
+}
+.monkey5 {
+    position:absolute;
+    width: 7%;
+    bottom:50.8%;
+    right: 69%;
+    z-index: -1;
+}
+.monkey6 {
+    position:absolute;
+    width:17%;
+    bottom:59.8%;
+    right: 60%;
+    z-index: -1;
+}
+.monkey7 {
+    position:absolute;
+    width:10%;
+    bottom:55.8%;
+    left: 60%;
+    z-index: -1;
+}

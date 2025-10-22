@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auftrag-8-fun</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="Auftrag-8-fun.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <label for="Name" class="Name-titel">Name:</label>
+                <input type="text" class="Name form-control">
+            </div>
+            <div class="col-sm-4">
+                <label for="Vorname" class="Vorname-titel">Vorname:</label>
+                <input type="text" class="Vorname form-control">
+            </div>
+            <div class="col-sm-4">
+                <label for="Geburtsdatum" class="Geburtsdatum-titel">Geburtsdatum:</label>
+                <input type="text"class="Geburtsdatum form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                <label for="Strasse" class="Strasse-titel">Strasse:</label>
+                <input type="text" class="Strasse form-control">
+            </div>
+            <div class="col-sm-4">
+                <label for="Muttersprache" class="Muttersprache-titel">Muttersprache:</label>
+                <form class="MutterspracheForm form-control">
+                    <input type="radio" class="Muttersprache" name="Ms" id="d" value="Deutsch">
+                    <label for="d">De</label>
+                    <input type="radio" class="Muttersprache" name="Ms" id="f" value="Französisch">
+                    <label for="f">Fr</label>
+                    <input type="radio" class="Muttersprache" name="Ms" id="i" value="Italienisch">
+                    <label for="i">It</label>
+                    <input type="radio" class="Muttersprache" name="Ms" id="rät" value="Rätoromanisch">
+                    <label for="rät">Rät</label>
+                    <input type="radio" class="Muttersprache" name="Ms" id="a" value="andere1">
+                    <label for="andere1">andere:</label>
+                    <input type="text" class="andere form-control">
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                <label for="PLZ" class="PLZ-titel">PLZ/Ort:</label>
+                <input type="text" class="PLZ form-control">
+            </div>
+            <div class="col-sm-1">
+                <label for="Geschlecht" class="Geschlecht-titel"><br>Geschlecht:</label>
+            </div>
+            <div class="col-sm-3">
+                <form class="GeschlechtForm form-control">
+                    <input type="radio" class="Geschlecht" name="G" id="m" value="Maskulin">
+                    <label for="m">M</label>
+                    <input type="radio" class="Geschlecht" name="G" id="f" value="Feminin">
+                    <label for="f">F</label>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label for="Telefonnummer">Telefonnummer</label>
+                <input type="text" class="Telefonnummer form-control">
+            </div>
+            <div class="col-sm-4">
+                <label for="Heimatort">Heimatort</label>
+                <input type="text" class="Heimatort form-control">
+            </div>
+            <div class="col-sm-4">
+                <label for="AHV">AHV-Nr</label>
+                <input type="text" class="AHV form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label for="Mobile">Mobile</label>
+                <input type="text" class="Mobile form-control">
+            </div>
+            <div class="col-sm-3">
+                <label for="Kanton">Kanton</label>
+                <input type="text" class="Kanton form-control">
+            </div>
+            <div class="col-sm-5">
+                <label for="AusweisForm">Ausländerausweis:</label>
+                <form class="AusweisForm form-control">
+                    <input type="radio" class="Ausweis" name="A" id="C" value="C">
+                    <label for="C">Niederlassung C</label>
+                    <input type="radio" class="Ausweis" name="A" id="andere" value="andere">
+                    <label for="andere">andere:*</label>
+                </form>
+                <input type="text" class="status form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label for="E-Mail">E-Mail</label>
+                <input type="text" class="E-Mail form-control">
+            </div>
+            <div class="col-sm-3">
+                <label for="Staat">Staat</label>
+                <input type="text" class="Staat form-control">
+            </div>
+            <div class="col-sm-5">
+                <p class="cText">*Zwingend angeben (setzt ein entsprechendes Gesuch bei der Fremdenpolizei bzw. dem Amt für Migration durch den Lehrbetrieb voraus)
+            </div>
+        </div>
+    </div>
+    <img src="/Auftrag-8-fun/monkey.png" class="monkey">
+    <img src="/Auftrag-8-fun/monkey.png" class="monkey1">
+    <img src="/Auftrag-8-fun/monkey1.png" class="monkey2">
+    <img src="/Auftrag-8-fun/monkey2.png" class="monkey3">
+    <img src="/Auftrag-8-fun/monkey3.png" class="monkey4">
+    <img src="/Auftrag-8-fun/monkey4.png" class="monkey5">
+    <img src="/Auftrag-8-fun/monkey5.png" class="monkey6">
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</html>
