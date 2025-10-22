@@ -1,1 +1,1 @@
-Just some personal projects I did in my freetime
+Just some personal projects I did in my free time.
