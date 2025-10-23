@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zufalls-Glücksspiel</title>
+    <!-- Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Einfache Lade-Animation für die Spiel-Schaltfläche */
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .loading::after {
+            content: ' .';
+            animation: dots 1s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% {
+                color: rgba(0,0,0,0);
+                text-shadow:
+                    .25em 0 0 rgba(0,0,0,0),
+                    .5em 0 0 rgba(0,0,0,0);
+            }
+            40% {
+                color: white;
+                text-shadow:
+                    .25em 0 0 rgba(0,0,0,0),
+                    .5em 0 0 rgba(0,0,0,0);
+            }
+            60% {
+                text-shadow:
+                    .25em 0 0 white,
+                    .5em 0 0 rgba(0,0,0,0);
+            }
+            80%, 100% {
+                text-shadow:
+                    .25em 0 0 white,
+                    .5em 0 0 white;
+            }
+        }
+ 
+        /* Canvas-Stile */
+        #glücksrad {
+            border-radius: 50%;
+            background-color: #2d3748; /* Grau-800 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen font-sans">
+ 
+    <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl text-center max-w-lg w-full">
+       
+        <!-- Titel --><h1 class="text-3xl font-bold mb-4 text-blue-400">Glücksrad</h1>
+        <p class="text-gray-400 mb-8">Drehe das Rad und gewinne oder verliere!</p>
+ 
+        <!-- Spiel-Wechsler --><div class="flex justify-center mb-4">
+            <button id="switch-game-button" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition duration-300">
+                Slot-Maschine spielen
+            </button>
+        </div>
+ 
+        <!-- Guthaben-Anzeige --><div class="mb-8">
+            <span class="text-lg text-gray-400">Dein Guthaben</span>
+            <div id="guthaben-anzeige" class="text-6xl font-bold text-white my-2">
+                500
+            </div>
+            <span class="text-lg text-gray-400">Münzen</span>
+        </div>
+ 
+        <!-- Einsatz-Wahl --><div class="mb-4">
+            <label for="einsatz-select" class="block text-sm font-medium text-gray-400 mb-2">Wähle deinen Einsatz:</label>
+            <select id="einsatz-select" class="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                <!-- 10er Schritte --><option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+                <option value="60">60</option>
+                <option value="70">70</option>
+                <option value="80">80</option>
+                <option value="90">90</option>
+                <!-- 100er Schritte --><option value="100">100</option>
+                <option value="200">200</option>
+                <option value="300">300</option>
+                <option value="400">400</option>
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700">700</option>
+                <option value="800">800</option>
+                <option value="900">900</option>
+                <option value="1000">1000</option>
+            </select>
+        </div>
+ 
+        <!-- Glücksrad-Container --><div id="wheel-game-container">
+            <!-- Canvas für das Glücksrad --><div class="relative w-64 h-64 mx-auto mb-8">
+                <canvas id="glücksrad" width="256" height="256" class="rounded-full shadow-lg"></canvas>
+                <!-- Zeiger --><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[20px] border-b-white transform -translate-y-2" style="transform: translate(-50%, -100%);"></div>
+            </div>
+        </div>
+ 
+        <!-- Slot-Maschinen-Container --><div id="slot-machine-container" class="hidden">
+            <div class="bg-gray-900 p-6 rounded-lg shadow-inner flex justify-around items-center h-40 mb-8 space-x-4">
+                <div id="reel1" class="text-6xl p-2 bg-gray-700 rounded-lg w-1/3">🍒</div>
+                <div id="reel2" class="text-6xl p-2 bg-gray-700 rounded-lg w-1/3">🍋</div>
+                <div id="reel3" class="text-6xl p-2 bg-gray-700 rounded-lg w-1/3">🍊</div>
+            </div>
+        </div>
+ 
+ 
+        <!-- Spiel-Bereich --><div class="space-y-4">
+            <!-- Spiel-Knopf --><button id="spiel-knopf" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 ease-in-out shadow-lg transform hover:scale-105">
+                Rad drehen!
+            </button>
+           
+            <!-- Zurücksetzen-Knopf --><!--
+            <button id="reset-knopf" class="w-full bg-gray-600 hover:bg-gray-700 text-gray-300 font-bold py-2 px-4 rounded-lg transition duration-300">
+                Zurücksetzen
+            </button>
+            -->
+        </div>
+ 
+        <!-- Nachrichten-Bereich --><div id="nachricht" class="mt-8 h-12 text-xl font-medium transition duration-300">
+            <!-- Nachrichten werden hier eingefügt --></div>
+ 
+    </div>
+ 
+    <script>
+        // Spiel-Variablen
+        let guthaben = 500;
+ 
+        // HTML-Elemente holen
+        const guthabenAnzeige = document.getElementById('guthaben-anzeige');
+        const spielKnopf = document.getElementById('spiel-knopf');
+        // const resetKnopf = document.getElementById('reset-knopf');
+        const nachricht = document.getElementById('nachricht');
+        const einsatzSelect = document.getElementById('einsatz-select');
+        const canvas = document.getElementById('glücksrad');
+        const ctx = canvas.getContext('2d');
+ 
+        // Neue UI-Elemente
+        const switchGameButton = document.getElementById('switch-game-button');
+        const wheelGameContainer = document.getElementById('wheel-game-container');
+        const slotMachineContainer = document.getElementById('slot-machine-container');
+        const reel1 = document.getElementById('reel1');
+        const reel2 = document.getElementById('reel2');
+        const reel3 = document.getElementById('reel3');
+ 
+        // Spiel-Status
+        let currentGame = 'wheel'; // 'wheel' or 'slots'
+ 
+        // Slot-Maschinen-Konfiguration
+        const slotSymbols = ['🍒', '🍋', '🍊', '🔔', '7️⃣'];
+        const slotPayouts = {
+            '🍒': 5,
+            '🍋': 8,
+            '🍊': 10,
+            '🔔': 15,
+            '7️⃣': 25
+        };
+ 
+        // Rad-Sektionen definieren: {text, multiplier, color, weight (relative Häufigkeit)}
+        // Abwechselnd Gewinn- und Verlustfelder
+        const sections = [
+            { text: "Verloren!", multiplier: 0, color: '#ef4444', weight: 3 }, // Rot (Verloren)
+            { text: "x2 Gewinn", multiplier: 2, color: '#3b82f6', weight: 2 }, // Blau (Einsatz zurück)
+            { text: "Verloren!", multiplier: 0, color: '#ef4444', weight: 3 }, // Rot
+            { text: "x3 Gewinn", multiplier: 3, color: '#22c55e', weight: 1.5 }, // Grün (Doppelter Einsatz)
+            { text: "Verloren!", multiplier: 0, color: '#ef4444', weight: 3 }, // Rot
+            { text: "x2 Gewinn", multiplier: 2, color: '#3b82f6', weight: 2 }, // Blau
+            { text: "Verloren!", multiplier: 0, color: '#ef4444', weight: 3 }, // Rot
+            { text: "x4 Gewinn", multiplier: 4, color: '#eab308', weight: 1 }, // Gelb (Vierfacher Einsatz)
+        ];
+ 
+        let totalWeight = sections.reduce((sum, s) => sum + s.weight, 0);
+        let currentRotation = 0; // Aktuelle Rotation des Rades
+ 
+        // Event-Listener hinzufügen
+        spielKnopf.addEventListener('click', spieleStarten); // Geändert
+        switchGameButton.addEventListener('click', switchGame); // Neu
+        // resetKnopf.addEventListener('click', spielZuruecksetzen);
+        einsatzSelect.addEventListener('change', einsatzPruefen);
+ 
+        // Funktion zum Prüfen des Einsatzes (für den Button-Status)
+        function einsatzPruefen() {
+            const aktuellerEinsatz = parseInt(einsatzSelect.value, 10);
+            if (guthaben < aktuellerEinsatz) {
+                spielKnopf.disabled = true;
+                spielKnopf.classList.add('opacity-50', 'cursor-not-allowed');
+                zeigeNachricht("Nicht genug Guthaben für diesen Einsatz.", 'text-red-500');
+            } else {
+                spielKnopf.disabled = false;
+                spielKnopf.classList.remove('opacity-50', 'cursor-not-allowed');
+                if (nachricht.textContent.startsWith("Nicht genug")) {
+                     zeigeNachricht("", 'text-gray-400');
+                }
+            }
+        }
+ 
+        // Funktion zum Aktualisieren der Guthaben-Anzeige
+        function updateGuthabenAnzeige() {
+            guthabenAnzeige.textContent = guthaben;
+        }
+ 
+        // Funktion zum Zeichnen des Glücksrads
+        function drawWheel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 5; // Kleiner Rand
+ 
+            let startAngle = 0;
+            for (const section of sections) {
+                const sliceAngle = (2 * Math.PI * section.weight) / totalWeight;
+                const endAngle = startAngle + sliceAngle;
+ 
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = section.color;
+                ctx.fill();
+ 
+                // Text zeichnen
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "white";
+                ctx.font = "bold 16px sans-serif";
+                ctx.fillText(section.text, radius * 0.8, 0);
+                ctx.restore();
+ 
+                startAngle = endAngle;
+            }
+        }
+ 
+        // --- NEUE FUNKTIONEN ---
+ 
+        // Haupt-Spielfunktion, die entscheidet, welches Spiel gestartet wird
+        function spieleStarten() {
+            const einsatz = parseInt(einsatzSelect.value, 10);
+ 
+            if (guthaben < einsatz) {
+                zeigeNachricht("Nicht genug Guthaben!", 'text-red-500');
+                spielKnopf.disabled = true;
+                return;
+            }
+ 
+            // Einsatz bezahlen und UI sperren
+            guthaben -= einsatz;
+            updateGuthabenAnzeige();
+            spielKnopf.classList.add('loading');
+            spielKnopf.disabled = true;
+            einsatzSelect.disabled = true;
+            switchGameButton.disabled = true;
+ 
+            if (currentGame === 'wheel') {
+                zeigeNachricht("Das Rad dreht sich...", 'text-gray-400');
+                dreheRad(einsatz); // Übergibt den Einsatz
+            } else {
+                zeigeNachricht("Der Hebel wird gezogen...", 'text-gray-400');
+                spinSlots(einsatz); // Übergibt den Einsatz
+            }
+        }
+ 
+        // Funktion zum Wechseln des Spiels
+        function switchGame() {
+            if (currentGame === 'wheel') {
+                currentGame = 'slots';
+                wheelGameContainer.classList.add('hidden');
+                slotMachineContainer.classList.remove('hidden');
+                spielKnopf.textContent = 'Hebel ziehen!';
+                switchGameButton.textContent = 'Glücksrad spielen';
+            } else {
+                currentGame = 'wheel';
+                wheelGameContainer.classList.remove('hidden');
+                slotMachineContainer.classList.add('hidden');
+                spielKnopf.textContent = 'Rad drehen!';
+                switchGameButton.textContent = 'Slot-Maschine spielen';
+            }
+        }
+ 
+        // Funktion für die Slot-Maschine
+        function spinSlots(einsatz) {
+            let spin1, spin2, spin3;
+           
+            // Zufällige Endergebnisse bestimmen
+            const finalResults = [
+                slotSymbols[Math.floor(Math.random() * slotSymbols.length)],
+                slotSymbols[Math.floor(Math.random() * slotSymbols.length)],
+                slotSymbols[Math.floor(Math.random() * slotSymbols.length)]
+            ];
+ 
+            // Animations-Intervalle
+            spin1 = setInterval(() => { reel1.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)]; }, 100);
+            spin2 = setInterval(() => { reel2.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)]; }, 100);
+            spin3 = setInterval(() => { reel3.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)]; }, 100);
+ 
+            // Walzen nacheinander stoppen
+            setTimeout(() => { clearInterval(spin1); reel1.textContent = finalResults[0]; }, 1000);
+            setTimeout(() => { clearInterval(spin2); reel2.textContent = finalResults[1]; }, 1500);
+            setTimeout(() => {
+                clearInterval(spin3);
+                reel3.textContent = finalResults[2];
+                // Animation beendet, Ergebnis verarbeiten
+                ergebnisVerarbeitenSlots(finalResults, einsatz);
+            }, 2000);
+        }
+ 
+        // Ergebnisverarbeitung für die Slot-Maschine
+        function ergebnisVerarbeitenSlots(results, einsatz) {
+            let nachrichtText = `Verloren! Du verlierst ${einsatz} Münzen.`;
+            let farbKlasse = 'text-red-500';
+ 
+            // Gewinnprüfung (nur 3 Gleiche für Einfachheit)
+            if (results[0] === results[1] && results[1] === results[2]) {
+                const symbol = results[0];
+                const multiplier = slotPayouts[symbol];
+                const gewonneneMuenzen = einsatz * multiplier;
+                guthaben += gewonneneMuenzen;
+                nachrichtText = `Jackpot! ${symbol}${symbol}${symbol}! Du erhältst ${gewonneneMuenzen} Münzen!`;
+                farbKlasse = 'text-green-400';
+            }
+            // HINWEIS: Man könnte hier auch 2er-Kombinationen hinzufügen
+ 
+            updateGuthabenAnzeige();
+            zeigeNachricht(nachrichtText, farbKlasse);
+           
+            // UI wieder freigeben
+            spielKnopf.classList.remove('loading');
+            einsatzSelect.disabled = false;
+            switchGameButton.disabled = false;
+            einsatzPruefen(); // Knopf-Status prüfen
+        }
+ 
+        // --- ANGEPASSTE FUNKTIONEN ---
+ 
+        // Funktion zum Drehen des Rades
+        function dreheRad(einsatz) { // Nimmt jetzt 'einsatz' als Parameter
+            /* Die folgenden Zeilen wurden entfernt und in spieleStarten() verschoben:
+            - const einsatz = ...
+            - if (guthaben < einsatz) ...
+            - guthaben -= einsatz;
+            - updateGuthabenAnzeige();
+            - spielKnopf.classList.add('loading');
+            - spielKnopf.disabled = true;
+            - einsatzSelect.disabled = true;
+            - zeigeNachricht("Das Rad dreht sich...", 'text-gray-400');
+            */
+ 
+            // Zufällige Sektion auswählen (basierend auf Gewichtung)
+            let randomValue = Math.random() * totalWeight;
+            let chosenSection = null;
+            let cumulativeWeight = 0;
+            let targetAngle = 0; // Winkel, zu dem das Rad stoppen soll
+ 
+            for (let i = 0; i < sections.length; i++) {
+                const section = sections[i];
+                // const sliceAngle = (2 * Math.PI * section.weight) / totalWeight; // Nicht direkt benötigt für targetAngle Berechnung
+               
+                if (randomValue >= cumulativeWeight && randomValue < cumulativeWeight + section.weight) {
+                    chosenSection = section;
+                   
+                    // Berechne einen zufälligen Winkel innerhalb der gewählten Sektion
+                    const minAngleInSection = (cumulativeWeight / totalWeight) * (2 * Math.PI);
+                    const maxAngleInSection = ((cumulativeWeight + section.weight) / totalWeight) * (2 * Math.PI);
+                    let exactStopAngle = minAngleInSection + Math.random() * (maxAngleInSection - minAngleInSection);
+                   
+                    // Der Zeiger ist oben (0 Grad), die Sektionen starten bei 0 und gehen im Uhrzeigersinn.
+                    // Wir wollen, dass der Zeiger auf `exactStopAngle` zeigt.
+                    // Die Rotation des Rades ist entgegen dem Uhrzeigersinn.
+                    // Also ist der Zielwinkel der Rotation: (2*PI - (exactStopAngle - PI/2)) % (2*PI)
+                    // Oder einfacher: `exactStopAngle` ist der Winkel, den der Pfeil erreichen soll, relativ zum Startwinkel des ersten Segments.
+                    // Damit der Pfeil auf dieses Segment zeigt, muss das Rad um diesen Winkel gedreht werden.
+                    // Der Zeiger ist bei 0 Radian (nach oben), die Sektionen beginnen auch bei 0.
+                    // Wenn z.B. die Mitte des Zielsegments bei 1 Radian ist, muss das Rad um -1 Radian gedreht werden.
+                    // Wir addieren 3 volle Drehungen für den Effekt.
+                    targetAngle = (3 * 2 * Math.PI) + (2 * Math.PI - exactStopAngle);
+                   
+                    // Wichtig: Da der Text im Sektor gezeichnet und rotiert wird, muss der "Startpunkt" des Sektors relativ zum Zeiger beachtet werden.
+                    // Der Zeiger zeigt nach oben (0 Grad). Das erste Segment beginnt bei 0.
+                    // Wenn exactStopAngle z.B. 0.5rad ist, muss das Rad um (2*PI - 0.5) rad gedreht werden.
+                    // Wir addieren noch PI/2, weil der Text zur "rechten" Seite des Sektors gezeichnet wird.
+                    // Das ist ein bisschen tricky mit der Textausrichtung und der Rotation.
+                    // Die aktuelle Berechnung `(2 * Math.PI - (targetAngle + Math.PI / 2)) % (2 * Math.PI)` aus der vorherigen Version war hier schon näher dran,
+                    // wenn man `exactStopAngle` als `targetAngle` verwendet.
+                    // Vereinfachen wir es: Wir wollen, dass das Rad so dreht, dass die *Mitte* des gewählten Sektors unter dem Zeiger landet.
+                    // Der Zeiger ist oben, also bei 0 Grad (oder 2*PI).
+                    // Die Sektionen werden vom Startwinkel 0 aus im Uhrzeigersinn gezeichnet.
+                    // Die Mitte des Sektors ist `minAngleInSection + (maxAngleInSection - minAngleInSection) / 2`.
+                    // Wenn das Rad um `(2 * Math.PI - (midAngle))` gedreht wird, sollte `midAngle` oben sein.
+                   
+                    const midAngleOfChosenSection = minAngleInSection + (maxAngleInSection - minAngleInSection) / 2;
+                    // KORREKTUR: Der Zeiger ist bei 1.5 * PI (12 Uhr), nicht bei 0 oder 2*PI (3 Uhr).
+                    const pointerAngle = 1.5 * Math.PI; // 12-Uhr-Position
+                    targetAngle = (3 * 2 * Math.PI) + (pointerAngle - midAngleOfChosenSection + (Math.random() * 0.1 - 0.05)); // Kleine zufällige Abweichung im Sektor für mehr Realismus
+                    break;
+                }
+                cumulativeWeight += section.weight;
+            }
+ 
+            const duration = 4000; // 4 Sekunden Drehdauer
+            const startTime = performance.now();
+ 
+            function animateWheel(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                if (elapsedTime < duration) {
+                    const progress = easeOutCubic(elapsedTime / duration);
+                    // Die Rotation ist die Startrotation + die Differenz zum Ziel, multipliziert mit dem Fortschritt
+                    const rotation = currentRotation + (targetAngle - currentRotation) * progress;
+                    canvas.style.transform = `rotate(${rotation}rad)`;
+                    requestAnimationFrame(animateWheel);
+                } else {
+                    canvas.style.transform = `rotate(${targetAngle}rad)`; // Endgültige Position setzen
+                    currentRotation = targetAngle % (2 * Math.PI); // Aktuelle Rotation für nächste Runde speichern (normalisiert)
+                    ergebnisVerarbeitenWheel(chosenSection, einsatz); // Umbenannt
+                }
+            }
+            requestAnimationFrame(animateWheel);
+        }
+ 
+        // Easing-Funktion für eine sanfte Bremsung
+        function easeOutCubic(t) {
+            return (--t) * t * t + 1;
+        }
+ 
+        // Funktion zur Verarbeitung des Ergebnisses (Umbenannt)
+        function ergebnisVerarbeitenWheel(resultSection, einsatz) {
+            let nachrichtText;
+            let farbKlasse;
+ 
+            if (resultSection.multiplier > 0) {
+                const gewonneneMuenzen = einsatz * resultSection.multiplier;
+                guthaben += gewonneneMuenzen;
+                nachrichtText = `Gewonnen! Du erhältst ${gewonneneMuenzen} Münzen!`;
+                farbKlasse = 'text-green-400';
+            } else {
+                nachrichtText = `Verloren! Du verlierst ${einsatz} Münzen.`;
+                farbKlasse = 'text-red-500'; // Typo 'farbKLasse' korrigiert
+            }
+           
+            updateGuthabenAnzeige();
+            zeigeNachricht(nachrichtText, farbKlasse);
+ 
+            spielKnopf.classList.remove('loading');
+            einsatzSelect.disabled = false; // Einsatzwahl wieder aktivieren
+            switchGameButton.disabled = false; // Spiel-Wechsel wieder aktivieren
+            einsatzPruefen(); // Prüfen, ob der aktuell gewählte Einsatz noch möglich ist
+        }
+ 
+        /*
+        // Funktion zum Zurücksetzen des Spiels
+        function spielZuruecksetzen() {
+            guthaben = 500;
+            updateGuthabenAnzeige();
+            einsatzSelect.value = "10";
+            spielKnopf.disabled = false;
+            spielKnopf.classList.remove('opacity-50', 'cursor-not-allowed');
+            einsatzSelect.disabled = false;
+            canvas.style.transform = `rotate(0rad)`; // Rad zurücksetzen
+            currentRotation = 0;
+            zeigeNachricht("Spiel zurückgesetzt.", 'text-gray-400');
+            drawWheel(); // Rad neu zeichnen
+        }
+        */
+ 
+        // Hilfsfunktion zum Anzeigen von Nachrichten
+        function zeigeNachricht(text, farbKlasse) {
+            nachricht.textContent = text;
+            nachricht.className = `mt-8 h-12 text-xl font-medium transition duration-300 ${farbKlasse}`;
+        }
+ 
+        // Initialisierung
+        updateGuthabenAnzeige();
+        drawWheel(); // Rad beim Laden das erste Mal zeichnen
+        einsatzPruefen();
+    </script>
+ 
+</body>
+</html>
